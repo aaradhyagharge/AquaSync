@@ -73,23 +73,23 @@ For judges inquiring about real-world hardware feasibility, the complete deploya
 
 ---
 
-## 🎤 3-Minute Hackathon Winning Pitch Script
+## 🎤 The Pitch
 
-> **[0:00 - 0:45] The Hook & Problem**  
+> **The Hook & Problem**  
 > "Judges, over 40% of residential water damage and 65% of domestic motor burnouts occur due to two simple problems: unattended tank overflows and dry-run cavitation when underground sumps run dry. Existing solutions are either dumb mechanical ball floats that get stuck, or basic ultrasonic buzzers that offer zero intelligence. We built **AquaSync AI™**."
 > 
-> **[0:45 - 1:45] The Live Demonstration**  
+> **Demonstration**  
 > *(Click Preset 2: Pipe Burst)*  
 > "Watch our 3D Digital Twin. We just simulated a catastrophic mainline pipe breach. Notice how the flowmeter differential immediately spikes. Within 1.4 seconds, our edge AI algorithm identified the acoustic pressure loss and automatically isolated Solenoid Valve V4, saving hundreds of liters of water and preventing structural foundation flooding."
 > 
 > *(Click Preset 3: Dry Run)*  
 > "Now watch our pump protection. The sump runs empty while the pump is active. Rather than letting the impeller overheat in air, our dual-sensing algorithm senses the immediate motor current drop to 1.7 Amps and engages an emergency hardware trip in 220 milliseconds."
 > 
-> **[1:45 - 2:30] Renewable Energy & Embedded Hardware**  
+> **Renewable Energy & Embedded Hardware**  
 > *(Show Virtual ESP32 Studio & Solar Mode)*  
 > "AquaSync also optimizes utility costs. When our weather module predicts peak midday solar surplus, it fills storage tanks for free before peak evening tariff hours. And this isn't just a prototype: here is our virtual ESP32 DevKit running live SSD1306 telemetry with deployable FreeRTOS C++ code ready to flash onto production hardware."
 > 
-> **[2:30 - 3:00] Conclusion & Impact**  
+> **Conclusion & Impact**  
 > "AquaSync AI transforms traditional water tanks into an autonomous, self-healing, energy-positive smart hydro-grid. Thank you!"
 
 ---
