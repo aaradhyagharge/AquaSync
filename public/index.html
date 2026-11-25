@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQUASYNC AI™ | Pure Dual-Tank Hydro-Grid & 3D Digital Twin</title>
+  <link rel="stylesheet" href="css/style.css?v=3.0.0">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- 1. TOP SCADA NAVIGATION BAR -->
+  <header class="scada-navbar">
+    <div class="brand-section">
+      <div class="brand-logo-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+        </svg>
+      </div>
+      <div class="brand-title">
+        <h1>AQUASYNC AI™</h1>
+        <span>AUTONOMOUS HYDRO-TWIN SCADA OS v2.4</span>
+      </div>
+    </div>
+
+    <div class="nav-status-indicators">
+      <div class="status-badge">
+        <span class="status-dot" id="gridStatusDot"></span>
+        <span id="gridStatusText">AUTONOMOUS GRID: OPTIMAL</span>
+      </div>
+
+      <button class="btn-header-tool" id="btnToggleSound">
+        🔇 Audio SFX: OFF
+      </button>
+
+      <button class="btn-header-tool" id="btnViewFirmware">
+        ⚡ ESP32 Firmware & BOM
+      </button>
+    </div>
+  </header>
+
+  <!-- 2. JUDGES QUICK PRESET SCENARIO BAR (1-Click Wow Presets) -->
+  <section class="preset-scenarios-bar">
+    <span class="preset-label">
+      <span>⚡</span> DEMO LAB PRESETS:
+    </span>
+    <button class="preset-chip active" data-scenario="NORMAL">
+      🌊 1. Autonomous Equilibrium
+    </button>
+    <button class="preset-chip alert-chip" data-scenario="PIPE_BURST">
+      🚨 2. Riser Pipe Burst & Auto-Cutoff
+    </button>
+    <button class="preset-chip alert-chip" data-scenario="DRY_RUN">
+      ⚡ 3. Dry-Run Cavitation Trip
+    </button>
+    <button class="preset-chip" data-scenario="MORNING_PEAK">
+      🏙️ 4. Morning Peak Surge (7 AM)
+    </button>
+    <button class="preset-chip" data-scenario="CONTAMINATION">
+      ☣️ 5. Contamination Spike
+    </button>
+    <button class="preset-chip" data-scenario="SOLAR_PEAK">
+      ☀️ 6. Solar Surplus Pumping
+    </button>
+  </section>
+
+  <!-- 3. MAIN DASHBOARD CONTAINER -->
+  <main class="dashboard-container">
+
+    <!-- TOP TELEMETRY METRIC CARDS (STRICTLY DUAL-TANK SYSTEM) -->
+    <section class="metrics-row">
+      <!-- OHT Level Card -->
+      <div class="metric-card accent-cyan">
+        <div class="metric-header">
+          <span>ROOFTOP TANK (OHT-2500)</span>
+          <span class="badge-tag">ELEVATION 22.5M</span>
+        </div>
+        <div class="metric-value-group">
+          <span class="metric-value" id="metricOhtLevel">74.0</span>
+          <span class="metric-unit">%</span>
+        </div>
+        <div class="metric-bar-bg">
+          <div class="metric-bar-fill" id="barOhtFill" style="width: 74%;"></div>
+        </div>
+        <div class="metric-footer">
+          <span id="metricOhtVolume">1,850 / 2,500 L</span>
+          <span>Ultrasonic: <strong id="hudOhtDist" style="color:#00e5ff;">52.0 cm</strong></span>
+        </div>
+      </div>
+
+      <!-- Sump Level Card -->
+      <div class="metric-card accent-emerald">
+        <div class="metric-header">
+          <span>SUBTERRANEAN SUMP (UGT-6000)</span>
+          <span class="badge-tag" style="color:#10b981; border-color:rgba(16,185,129,0.3);">BASEMENT -3.5M</span>
+        </div>
+        <div class="metric-value-group">
+          <span class="metric-value" id="metricSumpLevel" style="color:#10b981;">85.0</span>
+          <span class="metric-unit">%</span>
+        </div>
+        <div class="metric-bar-bg">
+          <div class="metric-bar-fill" id="barSumpFill" style="width: 85%; background:#10b981;"></div>
+        </div>
+        <div class="metric-footer">
+          <span id="metricSumpVolume">5,100 / 6,000 L</span>
+          <span>Bottom: <strong id="hudPressure" style="color:#10b981;">20.8 kPa</strong></span>
+        </div>
+      </div>
+
+      <!-- Pump Diagnostics Card -->
+      <div class="metric-card accent-amber">
+        <div class="metric-header">
+          <span>1.5 HP SUBMERSIBLE PUMP</span>
+          <span class="badge-tag" style="color:#f59e0b; border-color:rgba(245,158,11,0.3);">MOTOR</span>
+        </div>
+        <div class="metric-value-group">
+          <span class="metric-value" id="metricPumpAmps" style="color:#f59e0b;">0.0</span>
+          <span class="metric-unit">AMPS</span>
+        </div>
+        <div class="metric-bar-bg">
+          <div class="metric-bar-fill" id="barPumpPower" style="width: 0%; background:#f59e0b;"></div>
+        </div>
+        <div class="metric-footer">
+          <span id="metricPumpPower">0.00 kW | 0 RPM</span>
+          <span>Vib: <strong id="hudPumpVibration" style="color:#f59e0b;">1.1 mm/s</strong></span>
+        </div>
+      </div>
+
+      <!-- Gravity Reserve & Hydraulic Head Card -->
+      <div class="metric-card accent-violet">
+        <div class="metric-header">
+          <span>HYDRAULIC HEAD & RESERVE</span>
+          <span class="badge-tag" style="color:#a855f7; border-color:rgba(168,85,247,0.3);">GRAVITY GRID</span>
+        </div>
+        <div class="metric-value-group">
+          <span class="metric-value" id="metricReserveHours" style="color:#a855f7;">3.1</span>
+          <span class="metric-unit">HOURS LEFT</span>
+        </div>
+        <div class="metric-footer" style="margin-top:10px;">
+          <span id="metricConsumption">Demand: 10.0 L/min</span>
+          <span>Head: <strong id="metricHeadPressure" style="color:#a855f7;">2.35 BAR</strong></span>
+        </div>
+        <div class="metric-footer">
+          <span>Solar: <strong id="metricSolarKw" style="color:#10b981;">3.8 kW</strong></span>
+          <span style="color:#10b981;">Grid Tariff: $0.00</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CENTER HERO: 3D DIGITAL TWIN & SCADA CONTROLS -->
+    <section class="scada-main-grid">
+      
+      <!-- 3D DIGITAL TWIN VIEWER -->
+      <div class="twin-stage-card">
+        <div class="stage-topbar">
+          <div class="stage-title">
+            <h2>3D Digital Twin Architecture</h2>
+            <span class="badge-tag">PHYSICS ENGINE</span>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <!-- Mouse Action Mode: Pan vs Orbit -->
+            <div class="camera-controls-group" style="border-color:rgba(0,229,255,0.4);">
+              <button class="btn-cam active" id="btnDragPan" style="color:#00e5ff;">✋ Drag / Pan Tanks</button>
+              <button class="btn-cam" id="btnDragRotate">🔄 3D Orbit</button>
+            </div>
+
+            <!-- Camera Preset View Angles -->
+            <div class="camera-controls-group">
+              <button class="btn-cam active" data-cam="ISOMETRIC">Panoramic</button>
+              <button class="btn-cam" data-cam="OHT_FOCUS">Top Tank</button>
+              <button class="btn-cam" data-cam="SUMP_FOCUS">Bottom Sump</button>
+              <button class="btn-cam" data-cam="CUTAWAY">Cutaway</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="canvas-wrapper">
+          <canvas id="digitalTwinCanvas"></canvas>
+
+          <!-- On-Canvas Floating Quick Directional Pad -->
+          <div class="canvas-nav-dpad" style="position:absolute; top:16px; left:16px; display:flex; flex-direction:column; gap:6px; z-index:10;">
+            <div style="display:flex; gap:4px;">
+              <button class="btn-cam" id="btnPanUp" style="padding:6px 12px; background:rgba(15,23,42,0.85); border:1px solid #38bdf8;" title="Pan Up">▲ Pan Up</button>
+              <button class="btn-cam" id="btnPanDown" style="padding:6px 12px; background:rgba(15,23,42,0.85); border:1px solid #38bdf8;" title="Pan Down">▼ Pan Down</button>
+              <button class="btn-cam" id="btnPanLeft" style="padding:6px 10px; background:rgba(15,23,42,0.85); border:1px solid #38bdf8;" title="Pan Left">◀</button>
+              <button class="btn-cam" id="btnPanRight" style="padding:6px 10px; background:rgba(15,23,42,0.85); border:1px solid #38bdf8;" title="Pan Right">▶</button>
+            </div>
+            <div style="display:flex; gap:4px;">
+              <button class="btn-cam" id="btnZoomIn" style="padding:4px 10px; background:rgba(15,23,42,0.85); border:1px solid #38bdf8;" title="Zoom In">➕ Zoom In</button>
+              <button class="btn-cam" id="btnZoomOut" style="padding:4px 10px; background:rgba(15,23,42,0.85); border:1px solid #38bdf8;" title="Zoom Out">➖ Zoom Out</button>
+              <button class="btn-cam" id="btnResetView" style="padding:4px 10px; background:rgba(15,23,42,0.85); border:1px solid #38bdf8;" title="Reset Center View">🎯 Center All</button>
+            </div>
+          </div>
+
+          <!-- Floating Sliders Overlay on Canvas -->
+          <div class="canvas-overlay-sliders">
+            <div class="slider-group">
+              <div class="slider-label">
+                <span>Building Water Demand</span>
+                <strong id="labelDemandRate" style="color:#00e5ff;">12 L/min</strong>
+              </div>
+              <input type="range" class="custom-range" id="sliderConsumption" min="0" max="100" value="12">
+            </div>
+
+            <div class="slider-group" style="margin-top:6px;">
+              <div class="slider-label">
+                <span>3D Shading Mode</span>
+              </div>
+              <select id="selectRenderStyle" style="background:#0b0f19; color:#f8fafc; border:1px solid #334155; border-radius:6px; padding:4px 8px; font-family:monospace; font-size:0.75rem; width:100%;">
+                <option value="REALISTIC">Realistic Liquid & Glass</option>
+                <option value="WIREFRAME">Cyberpunk Wireframe Mesh</option>
+                <option value="THERMAL">Hydrostatic Thermal Gradient</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- HUD Telemetry Pill -->
+          <div class="canvas-overlay-hud">
+            <div class="hud-stat-pill">
+              <span>Simulation:</span> <strong>Real-time 2.5 Hz Synchronized</strong>
+            </div>
+            <div class="hud-stat-pill">
+              <span>Interactive Controls:</span> <span>Drag to Orbit • Scroll to Zoom</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SCADA CONTROL MATRIX -->
+      <aside class="scada-sidebar-controls">
+        
+        <!-- Control Panel Card -->
+        <div class="control-panel-card">
+          <div class="panel-title">
+            <span>SCADA Control Matrix</span>
+            <span class="badge-tag">ACTUATORS</span>
+          </div>
+
+          <!-- Mode Selector -->
+          <div class="mode-grid">
+            <button class="btn-mode active" data-mode="AUTO">
+              <span>🤖 AUTONOMOUS AI</span>
+              <small>Closed-loop FSM</small>
+            </button>
+            <button class="btn-mode" data-mode="MANUAL">
+              <span>🕹️ MANUAL SCADA</span>
+              <small>Operator Direct</small>
+            </button>
+            <button class="btn-mode" data-mode="SOLAR_SYNC">
+              <span>☀️ SOLAR ECO</span>
+              <small>Peak PV Charge</small>
+            </button>
+            <button class="btn-mode" data-mode="EMERGENCY_DRAIN">
+              <span>⚠️ PURGE / DRAIN</span>
+              <small>Rapid Evacuation</small>
+            </button>
+          </div>
+
+          <!-- Big Pump Actuator Switch -->
+          <div class="pump-actuator-hero">
+            <div class="actuator-row">
+              <div class="actuator-info">
+                <h4>Main Transfer Pump</h4>
+                <span>1.5 HP High-Head Submersible</span>
+              </div>
+              <div class="toggle-switch-container">
+                <input type="checkbox" id="pumpManualSwitch" class="toggle-switch-input">
+                <label for="pumpManualSwitch" class="toggle-slider"></label>
+              </div>
+            </div>
+
+            <button class="btn-header-tool" id="btnRefillSump" style="justify-content:center; width:100%;">
+              🔄 Quick Refill Sump Reservoir (6,000L)
+            </button>
+          </div>
+
+          <!-- Interactive Building Fixture Simulator -->
+          <div class="slider-group">
+            <span class="slider-label" style="font-weight:700; color:#f8fafc; margin-bottom:4px;">
+              BUILDING FIXTURE DEMAND SIMULATOR
+            </span>
+            <div class="fixture-grid">
+              <button class="fixture-btn" data-fixture="bathrooms">
+                <span>🚿 Bathrooms</span>
+                <span class="fixture-flow-badge">+18 L/m</span>
+              </button>
+              <button class="fixture-btn fixture-active" data-fixture="kitchens">
+                <span>🍳 Kitchens</span>
+                <span class="fixture-flow-badge">+10 L/m</span>
+              </button>
+              <button class="fixture-btn" data-fixture="irrigation">
+                <span>🌿 Irrigation</span>
+                <span class="fixture-flow-badge">+15 L/m</span>
+              </button>
+              <button class="fixture-btn" data-fixture="fireHydrant">
+                <span>🚒 Fire Test</span>
+                <span class="fixture-flow-badge">+55 L/m</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Solenoid Valves Matrix (Pure Dual-Tank Grid) -->
+          <div class="slider-group">
+            <span class="slider-label" style="font-weight:700; color:#f8fafc; margin-bottom:4px;">
+              SOLENOID ISOLATION MATRIX
+            </span>
+            <div class="valve-grid">
+              <button class="valve-btn valve-open" data-valve="v1_pumpFeed">
+                <span>V1 Transfer Riser</span>
+                <strong class="valve-state-text">OPEN</strong>
+              </button>
+              <button class="valve-btn valve-shut" data-valve="v2_municipalInlet">
+                <span>V2 Municipal Sump</span>
+                <strong class="valve-state-text">SHUT</strong>
+              </button>
+              <button class="valve-btn valve-open" data-valve="v3_domesticGravityLine">
+                <span>V3 Gravity Mains</span>
+                <strong class="valve-state-text">OPEN</strong>
+              </button>
+              <button class="valve-btn valve-open" data-valve="v4_emergencyIsolation">
+                <span>V4 AI Failsafe</span>
+                <strong class="valve-state-text">OPEN</strong>
+              </button>
+            </div>
+          </div>
+
+          <!-- Emergency E-STOP Button -->
+          <button class="btn-estop" id="btnEstop">
+            🛑 EMERGENCY SHUTDOWN (E-STOP)
+          </button>
+        </div>
+
+      </aside>
+
+    </section>
+
+    <!-- ANALYTICS & WATER QUALITY ROW -->
+    <section class="analytics-grid">
+      <!-- Real-time Oscilloscope Chart -->
+      <div class="chart-card">
+        <div class="panel-title">
+          <span>Real-Time Multi-Channel Historian</span>
+          <span class="badge-tag">60 FPS TELEMETRY</span>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="telemetryChartCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Water Quality & WHO Purity Matrix -->
+      <div class="quality-card">
+        <div class="panel-title">
+          <span>Water Purity & Spectrometry</span>
+          <span class="badge-tag">ADS1115 ADC</span>
+        </div>
+        <div class="quality-metrics-list">
+          <div class="quality-row">
+            <span class="quality-label">Total Dissolved Solids (TDS)</span>
+            <span class="quality-val" id="valTds" style="color:#00e5ff;">185 ppm</span>
+          </div>
+          <div class="quality-row">
+            <span class="quality-label">Potential of Hydrogen (pH)</span>
+            <span class="quality-val" id="valPh" style="color:#10b981;">7.35</span>
+          </div>
+          <div class="quality-row">
+            <span class="quality-label">Turbidity (Clarity Index)</span>
+            <span class="quality-val" id="valTurbidity" style="color:#f59e0b;">1.8 NTU</span>
+          </div>
+          <div class="quality-row">
+            <span class="quality-label">Sterilization Status</span>
+            <span class="quality-val" style="color:#a855f7;">Dual UV-C Active</span>
+          </div>
+          <div class="quality-row">
+            <span class="quality-label">WHO Safety Rating</span>
+            <span class="quality-val badge-sev INFO" id="valSafetyStatus">EXCELLENT</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EMBEDDED HARDWARE STUDIO & ESP32 SIMULATOR -->
+    <section class="hardware-studio-card">
+      <div class="panel-title">
+        <span>Hardware Emulation Studio & Edge Microcontroller Testbed</span>
+        <span class="badge-tag">ESP32 DUAL-CORE 240MHz</span>
+      </div>
+
+      <div class="studio-grid">
+        <!-- Virtual ESP32 Development Board -->
+        <div class="esp32-visual-board">
+          <div class="esp32-silkscreen">
+            <span>ESP-WROOM-32</span>
+            <span>CH340 USB-UART</span>
+          </div>
+
+          <!-- Virtual SSD1306 0.96" OLED Display -->
+          <div class="virtual-oled-bezel">
+            <canvas id="virtualOledCanvas"></canvas>
+          </div>
+
+          <!-- Physical Status LEDs -->
+          <div class="board-leds-row">
+            <div class="board-led-item">
+              <div class="led-bulb blue on" id="ledBlueWifi"></div>
+              <span>GPIO 2 WiFi</span>
+            </div>
+            <div class="board-led-item">
+              <div class="led-bulb red" id="ledRedPump"></div>
+              <span>GPIO 23 Relay</span>
+            </div>
+            <div class="board-led-item">
+              <div class="led-bulb red" id="ledBuzzerAlarm"></div>
+              <span>GPIO 4 Alarm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- High-Baud UART Serial Terminal -->
+        <div class="serial-terminal-container">
+          <div class="terminal-header">
+            <span>UART SERIAL MONITOR (115200 BAUD)</span>
+            <span>COM7 /dev/ttyUSB0</span>
+          </div>
+          <div class="terminal-body" id="terminalBody">
+            <div class="terminal-line succ">[00:00:00.000] [ESP32_BOOT] Core 0 & Core 1 Initialized. FreeRTOS Scheduler running.</div>
+            <div class="terminal-line succ">[00:00:00.024] [WIFI] Connected to 'AquaSync_IoT_Grid' | IP: 192.168.1.104</div>
+            <div class="terminal-line">[00:00:00.048] [MQTT] Connected to broker 192.168.1.100:1883 | Node: aquasync_node_01</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCADA INCIDENTS & AUDIT TIMELINE -->
+    <section class="incidents-card">
+      <div class="panel-title">
+        <span>SCADA Incident & Autonomous AI Mitigation Audit Log</span>
+        <span class="badge-tag">AUDIT TRAIL</span>
+      </div>
+
+      <div class="log-table-wrapper">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>TIME</th>
+              <th>SEVERITY</th>
+              <th>EVENT TYPE</th>
+              <th>INCIDENT DETAILS</th>
+              <th>AI AUTONOMOUS MITIGATION</th>
+            </tr>
+          </thead>
+          <tbody id="alertsTableBody">
+            <!-- Populated via REST API -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: EMBEDDED C++ CODE & HARDWARE BOM -->
+  <div class="modal-backdrop" id="modalFirmware">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-size:1.05rem; font-weight:700;">ESP32 Production Firmware & Hardware Pinout Schematic</h3>
+        <div style="display:flex; gap:12px; align-items:center;">
+          <button class="btn-header-tool active" id="btnCopyCode">📋 Copy Arduino C++ Code</button>
+          <button class="btn-close-modal" id="btnCloseModal">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body" id="firmwareCodeDisplay">
+        Loading firmware...
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION SCRIPTS (DUAL-TANK ENHANCED v3.1.0) -->
+  <script src="js/twin3d.js?v=3.1.0"></script>
+  <script src="js/hardware.js?v=3.1.0"></script>
+  <script src="js/charts.js?v=3.1.0"></script>
+  <script src="js/app.js?v=3.1.0"></script>
+</body>
+</html>

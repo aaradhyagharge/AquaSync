@@ -1,0 +1,23 @@
+{
+  "name": "aquasync-smart-water-controller",
+  "version": "2.4.0",
+  "description": "Next-Gen Autonomous Multi-Tank Hydro-Grid & 3D Digital Twin SCADA Controller for Smart Buildings and Cities",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "iot",
+    "smart-water",
+    "digital-twin",
+    "tank-controller",
+    "esp32",
+    "hackathon",
+    "threejs",
+    "scada",
+    "ai-leak-detection"
+  ],
+  "author": "AquaSync AI Team",
+  "license": "MIT"
+}
