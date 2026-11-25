@@ -23,10 +23,8 @@ Most hackathon water level controllers are simple toys: an ultrasonic sensor tap
 ## 🚀 Quick Start Guide
 
 ### 1. Launch the Server
-In PowerShell or your terminal, navigate to the project directory and run:
-```powershell
-cd C:\Users\aryan\.gemini\antigravity\scratch\hydroflow-smart-tank
-agy-node server.js
+Download the project repository directory and run "run.ps1" file to start the server
+```
 ```
 *(Or use standard `node server.js` if Node.js is installed in your system PATH)*
 
