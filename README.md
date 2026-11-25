@@ -100,3 +100,4 @@ For judges inquiring about real-world hardware feasibility, the complete deploya
 - **3D Digital Twin Engine:** Procedural Canvas 3D Isometric Engine with wave physics and fluid particle emitters
 - **Audio Synthesis:** Web Audio API (Synthesized motor rumble, relay clack, sonar ping)
 - **Embedded Firmware:** C++ (ESP32 DevKit V1, FreeRTOS, ArduinoJson, PubSubClient MQTT)
+# AquaSync
